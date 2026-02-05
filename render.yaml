@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: hanmaum-backend
+    env: node
+    region: singapore
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: MONGODB_URI
+        value: mongodb+srv://berry04200_db_user:wKmBsoYtIfBIByBW@cluster0.zc2b6w6.mongodb.net/hanmaum?retryWrites=true&w=majority
+      - key: JWT_SECRET
+        value: hanmaum2024!SecureKey@Medical#Center$RandomString%202601
+      - key: FRONTEND_URL
+        value: "*"
