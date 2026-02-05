@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 5000;
 
 // 미들웨어
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: '*',  // 모든 도메인 허용으로 변경
   credentials: true
 }));
 app.use(express.json());
