@@ -13,6 +13,58 @@ const generateToken = (userId) => {
   );
 };
 
+// 일반 회원가입 (누구나 가능 - 테스트용)
+router.post('/register-public', async (req, res) => {
+  try {
+    const { name, email, password, phone, dateOfBirth, address, role } = req.body;
+
+    // 이메일 중복 확인
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ 
+        success: false,
+        error: '이미 존재하는 이메일입니다.' 
+      });
+    }
+
+    // 새 사용자 생성 (기본값: patient)
+    const user = new User({
+      name,
+      email,
+      password,
+      role: role || 'patient',
+      phone: phone || '',
+      dateOfBirth: dateOfBirth || null,
+      address: address || '',
+      title: ''
+    });
+
+    await user.save();
+
+    // 토큰 생성
+    const token = generateToken(user._id);
+
+    res.status(201).json({
+      success: true,
+      message: '회원가입이 완료되었습니다',
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      }
+    });
+  } catch (error) {
+    console.error('Register public error:', error);
+    res.status(500).json({ 
+      success: false,
+      error: '회원가입 중 오류가 발생했습니다.',
+      details: error.message 
+    });
+  }
+});
+
 // 회원가입 (관리자만 가능)
 router.post('/register', auth, async (req, res) => {
   try {
@@ -86,6 +138,7 @@ router.post('/login', async (req, res) => {
     const token = generateToken(user._id);
 
     res.json({
+      success: true,
       message: '로그인 성공',
       token,
       user: {
